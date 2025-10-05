@@ -1,21 +1,19 @@
 import express from "express"
 import dotenv from "dotenv"
 import connectDB from "./db/connectDB.js";
-
-dotenv.config();
-
+import {app} from "./app.js"
 const port = process.env.PORT
-const app = express()
+dotenv.config({
+    path:  ['.env.local', './.env']
+});
 
-app.get("/", (req, res) => {
-    res.status(200).json({id:1, name:"ashu"})
-})
+
 
 
 connectDB
 .then(() => {
-    app.listen(port, (err) => {
-    console.log("your erver is running on PORT", port)
+    app.listen(port || 3000, (err) => {
+    console.log("your ⚙ Server is 🏃‍♀️running on PORT", port)
 })
 
 })
