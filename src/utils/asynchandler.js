@@ -1,9 +1,7 @@
-import { ApiError } from "./ApiError"
-
-const asyncHandler = async (reusetHandler) => {
-    (req, res, next) => {
+const asyncHandler = (reusetHandler) => {
+    return (req, res, next) => {
         Promise.resolve(reusetHandler(req, res, next))
-        .catch((err) => next(new ApiError(400, false, err, "somthing wents wrong")))
+        .catch((err) => next())
     }
 
 }
