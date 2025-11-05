@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  whatchHistory:{
+    type: Schema.Types.ObjectId,
+    ref: "Video"
+  },
   time: {
     type: Date,
     default: Date.now,
@@ -38,6 +42,7 @@ const userSchema = new mongoose.Schema({
   coverImage: {
     type: String,
   },
+  
     AccessToken:{
     type: String
     

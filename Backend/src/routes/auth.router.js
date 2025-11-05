@@ -7,6 +7,7 @@ import { register,
          profile,
          profilePicUpdate,
          coverImageUpdate,
+         watchHistory,
          updateProfile  } from "../controller/auth.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyJWT } from "../middleware/auth.middleware.js"
@@ -40,5 +41,6 @@ router.post("/profilePicUpdate",
   ]),verifyJWT, coverImageUpdate )
 
 router.get("/refrashtoken", refrashAcessToken)
+router.get("/watchhistory",verifyJWT, watchHistory)
 
 export default router;
