@@ -1,14 +1,14 @@
+import {Outlet} from 'react-router-dom'
+
 
 function App() {
   return (
-    <>
-    <div className="main">
-      <h1>hellow</h1>
+    <div id='main'>
+
+      <Outlet />
+ 
 
     </div>
-      
-    </>
   )
 }
-
 export default App

@@ -27,3 +27,13 @@ export default defineConfig([
     },
   },
 ])
+
+
+module.exports = {
+  // existing code...
+
+  rules: {
+    // 🔹 Ye line add kar
+    "no-unused-vars": ["warn", { "varsIgnorePattern": "^_" }]
+  }
+};

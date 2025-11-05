@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Baskervville:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-*{
-    margin: o;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Roboto", sans-serif;
-}
 
+
+
+#main{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+#welcomeback{
+    font-family: baskervville;
+    font-weight: 400;
+    font-size: 40pt;
+}
