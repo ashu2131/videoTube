@@ -380,7 +380,7 @@ const user = await userModel.aggregate([
       new ApiResponse(
         200,
         user[0].watchHistory,
-        "get watchHistory watch from current user"
+        "WatchHistory fetch successfully"
       )
     );
 });
