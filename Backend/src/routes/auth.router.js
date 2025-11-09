@@ -11,7 +11,6 @@ import { register,
          updateProfile  } from "../controller/auth.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyJWT } from "../middleware/auth.middleware.js"
-import multer from "multer";
 
 const router = Router();
 
@@ -23,24 +22,26 @@ router.post(
   ]),
   register
 );
+
 router.get("/health", health)
 router.post("/login", userLogin);
 
 // secured routes
 router.post("/logout",verifyJWT, logOutUser )
 router.get("/profile/:userName", profile )
-router.post("/updateprofile",verifyJWT, updateProfile )
-router.post("/profilePicUpdate",
+router.patch("/updateprofile",verifyJWT, updateProfile )
+router.patch("/profilePicUpdate",
   upload.fields([
     { name: "profilePic", maxCount: 1 }
   ]),verifyJWT, profilePicUpdate )
 
-  router.post("/coverImageUpdate",
+  router.patch("/coverImageUpdate",
   upload.fields([
     { name: "coverImage", maxCount: 1 }
   ]),verifyJWT, coverImageUpdate )
 
 router.get("/refrashtoken", refrashAcessToken)
 router.get("/watchhistory",verifyJWT, watchHistory)
+
 
 export default router;
