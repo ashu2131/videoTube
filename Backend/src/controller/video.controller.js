@@ -34,32 +34,7 @@ const createVideo = asyncHandler(async (req, res) => {
         res.status(400).json(new ApiError(400, "video file is required"))
     }
     
-    // get extention
-    const videoExtention = path.extname(videoFilesLocalPath.path)
-    if (!videoExtention) {
-        res.status(400).json(new ApiError(400, "Invalid video file"))
-    }
-    
-    // rename file
-    const renameVideo = `${videoName+videoExtention}`
-    if (!renameVideo) {
-        res.status(500).json(new ApiError(500, "Cannot rename video file"))
-    }
-    
-    // move file to temp folder with new name
-    const videoFilesLocalNewPath = path.join("public/temp", renameVideo)
-    if (!videoFilesLocalNewPath) {
-        res.status(500).json(new ApiError(500, "Cannot move video file"))
-    }
-
-    // move file
-   fs.renameSync(videoFilesLocalPath.path, videoFilesLocalNewPath)
-
-    // upload on cloudinary
-    const videoUrl = await uploadOnCloudinary(videoFilesLocalNewPath, "video")
-    if (!videoUrl) {
-        res.status(500).json(new ApiError(500, "Cannot upload video on cloudinary"))
-    }
+    const videoFilesLocalNewPath = await videoFile(videoFilesLocalPath, videoName)
 
     // thumbnail
     const thumbnailLocalPath = req.files?.thumbnail[0].path
@@ -88,11 +63,11 @@ const createVideo = asyncHandler(async (req, res) => {
     }
 
     const video = await videoModel.create({
-        videoFile: videoUrl.url,
+        videoFile: videoFilesLocalNewPath.url,
         thumbnail: thumbnailUrl.url,
         title: videoTitle,
         description: videoDescription,
-        duration: videoUrl.duration,
+        duration: videoFilesLocalNewPath.duration,
         owner: req.user._id,
     })
     res.status(201).json(new ApiResponse(true, "Video created successfully", video))
@@ -127,11 +102,24 @@ const updatedVideo = asyncHandler(async (req, res) => {
 
 // delete video controller
 const deleteVideo = asyncHandler(async (req, res) => {
+    const videId = req.params?._id
+    await videoModel.findByIdAndDelete({_id: videId})
+    const videos = await videoModel.getAllVideo()
+    res.status(200).json(new ApiResponse(200, videos, "Video is deleted successfully"))
+
 })
 
-const getVideo = (req, res) => {
-    res.send("hellow world")
-}
+const getVideo = asyncHandler(async (req, res) => {
+    const videId = req.params?._id
+   const video =  await videoModel.findById({_id: videId})
+   res.status(200).json(new ApiResponse(200, video, "success"))
+    
+})
+
+const getAllVideo = asyncHandler(async (req, res) => {
+    const videos = await videoModel.getAllVideo()
+    res.status(200).json(new ApiResponse(200, videos, "All video fetch successfully"))
+})
 
 export {createVideo,
     updatedVideo,
