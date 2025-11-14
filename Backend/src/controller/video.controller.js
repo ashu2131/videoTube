@@ -43,8 +43,8 @@ const createVideo = asyncHandler(async (req, res) => {
     } 
 
     // upload thumbnail on cloudinary
-    const thumbnailUrl = await uploadOnCloudinary(thumbnailLocalPath, "image")
-    if (!thumbnailUrl) {
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath, "image")
+    if (!thumbnail) {
         res.status(500).json(new ApiError(500, "Cannot upload thumbnail on cloudinary"))
     }
     
@@ -64,7 +64,7 @@ const createVideo = asyncHandler(async (req, res) => {
 
     const video = await videoModel.create({
         videoFile: videoFilesLocalNewPath.url,
-        thumbnail: thumbnailUrl.url,
+        thumbnail: thumbnail.url,
         title: videoTitle,
         description: videoDescription,
         duration: videoFilesLocalNewPath.duration,
@@ -109,6 +109,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 })
 
+// get video controller
 const getVideo = asyncHandler(async (req, res) => {
     const videId = req.params?._id
    const video =  await videoModel.findById({_id: videId})
@@ -116,12 +117,71 @@ const getVideo = asyncHandler(async (req, res) => {
     
 })
 
+// get all video controller
 const getAllVideo = asyncHandler(async (req, res) => {
-    const videos = await videoModel.getAllVideo()
+    const videos = await videoModel.find()
     res.status(200).json(new ApiResponse(200, videos, "All video fetch successfully"))
 })
 
+// edit video details controller
+const editVideoDetails = asyncHandler(async(req, res) => {
+    // video title fields
+    const videoTitle = req.body.title
+    if (!videoTitle) {
+        res.status(400)
+        throw new Error("title is required")
+    }
+
+    // video description fields
+    const videoDescription = req.body.description
+    if (!videoDescription) {
+        res.status(400)
+        throw new Error("description is required")
+    }
+    const video = await videoModel.findByIdAndUpdate(
+        {
+            _id: req.params._id
+
+        },
+        {
+             title: videoTitle,
+        description: videoDescription,
+        })
+        res.status(200).json(new ApiResponse(200, video, "success"))
+})
+
+// update thumnail controller
+const updateThumnail = asyncHandler(async(req, res) => {
+        // thumbnail
+    const thumbnailLocalPath = req.files?.thumbnail[0].path
+    if (!thumbnailLocalPath) {
+        res.status(400).json(new ApiError(400, "thumbnail is required"))
+    } 
+
+    // upload thumbnail on cloudinary
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath, "image")
+    if (!thumbnail) {
+        res.status(500).json(new ApiError(500, "Cannot upload thumbnail on cloudinary"))
+    }
+
+    const video = await videoModel.findByIdAndUpdate({
+        _id: req.params._id
+    },
+    {
+        thumbnail:thumbnail.url
+    })
+   
+    res.status(200).json(new ApiResponse(200, video, "success"))
+})
+
+
+
+// export all video controller
 export {createVideo,
     updatedVideo,
+    editVideoDetails,
+    updateThumnail,
     deleteVideo,
-    getVideo}
+    getVideo,
+getAllVideo,
+}

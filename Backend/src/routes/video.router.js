@@ -1,5 +1,13 @@
 import { Router } from "express";
-import { createVideo, getVideo, updatedVideo} from "../controller/video.controller.js";
+import {
+  createVideo,
+  updatedVideo,
+  updateThumnail,
+  editVideoDetails,
+  deleteVideo,
+  getVideo,
+  getAllVideo,
+} from "../controller/video.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -16,16 +24,20 @@ videoRouter.post(
 );
 
 videoRouter.patch(
-  "/updatevideo/:_id",
+  "/updatevideo:_id",
   verifyJWT,
-  upload.fields([
-    { name: "videoFile", maxCount: 1 },
-  ]),
+  upload.fields([{ name: "videoFile", maxCount: 1 }]),
   updatedVideo
 );
 
-videoRouter.get("/video", getVideo)
+videoRouter.patch(
+  "/editVideoDetails/:_id",
+  verifyJWT, editVideoDetails,
+);
 
+videoRouter.patch("/updatethumnail/:_id", verifyJWT,upload.fields([{name: "thumbnail", maxCount: 1}]), updateThumnail,)
 
+videoRouter.get("/getvideo/:_id", getVideo);
+videoRouter.get("/getallvideos", getAllVideo);
 
 export default videoRouter;
