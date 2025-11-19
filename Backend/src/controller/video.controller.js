@@ -174,8 +174,6 @@ const updateThumnail = asyncHandler(async(req, res) => {
     res.status(200).json(new ApiResponse(200, video, "success"))
 })
 
-
-
 // export all video controller
 export {createVideo,
     updatedVideo,

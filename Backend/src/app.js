@@ -1,5 +1,6 @@
 import router from "./routes/auth.router.js"
 import videoRouter from "./routes/video.router.js";
+import subscriptionRouter from "./routes/subscriptions.router.js";
 import express from "express"
 import cookieParser from "cookie-parser";
 import cors from "cors"
@@ -19,5 +20,6 @@ app.use(express.static("../public"))
 
 app.use("/api/v1/user", router)
 app.use("/api/v1/video", videoRouter)
+app.use("/api/v1", subscriptionRouter)
 
 export default app;

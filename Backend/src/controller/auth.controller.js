@@ -26,7 +26,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 //Register user conttrolers code
 const register = asyncHandler(async (req, res) => {
-  console.log("➡️  register route hit hua");
   let { fullName, userName, email, password } = req.body;
   if (
     [fullName, userName, email, password].some((field) => {
@@ -194,6 +193,15 @@ const health = asyncHandler((req, res) => {
 });
 // get userporile
 const profile = asyncHandler(async (req, res) => {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
+    throw new ApiError(404, "user not found please login your account 😂🤣");
+  }
+  const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+  if (!decodedToken) {
+    throw new ApiError(404, "invalid decoded access token");
+  }
+  const logedUser = await userModel.findById(decodedToken._id);
   const { userName } = req.params;
 
   if (!userName?.trim()) {
@@ -231,7 +239,7 @@ const profile = asyncHandler(async (req, res) => {
         },
         isSubscribed: {
           $cond: {
-            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            if: { $in: [logedUser?._id, "$subscribers.subscriber"] },
             then: true,
             else: false,
           },
@@ -334,7 +342,7 @@ const coverImageUpdate = asyncHandler(async (req, res) => {
 });
 
 const watchHistory = asyncHandler(async (req, res) => {
-const user = await userModel.aggregate([
+  const user = await userModel.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(req.user._id),
@@ -384,7 +392,6 @@ const user = await userModel.aggregate([
       )
     );
 });
-
 
 export {
   health,

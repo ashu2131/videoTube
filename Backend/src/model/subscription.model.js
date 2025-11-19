@@ -10,7 +10,10 @@ const subscriptionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },  
-    timestamps: true
+     time: {
+    type: Date,
+    default: Date.now,
+  }
 })
 const subsriptionModel = mongoose.model("Subscription", subscriptionSchema)
-export {subsriptionModel    }
+export {subsriptionModel}
